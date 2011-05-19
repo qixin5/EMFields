@@ -59,8 +59,9 @@ public class Main extends JFrame {
 		setVisible(true);
 
 		handler.addChargedParticle(new Conductor(100, 100, 50, 1, 1));
+//		handler.addChargedParticle(new Conductor(100, 100, 1, 50, 1));
 		handler.addChargedParticle(new Conductor(140, 70, 1, 50, 1));
-		for(int i = 0; i < 10; i++)
+		for(int i = 0; i < 9; i++)
 			handler.addChargedParticle(new Electron(100, 100));
 
 		scalecanvas.init();

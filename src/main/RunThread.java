@@ -4,11 +4,13 @@ public class RunThread extends Thread {
 	final public long STEP_WAIT_MS = 40;
 
 	final public int STATE_RUNNING = 0;
-	final public int STATE_PAUSED = 1;
-	final public int STATE_STOP = 2;
+	final public int STATE_WORKING = 1;
+	final public int STATE_PAUSED = 2;
+	final public int STATE_STOP = 3;
 	private int state = STATE_RUNNING;
 
 	private final Main main;
+	private final RunThread runthread = this;
 	private long startmillis;
 	private double frames = 0;
 
@@ -22,6 +24,7 @@ public class RunThread extends Thread {
 			while(true) {
 				try {
 					if(state == STATE_RUNNING) {
+//						state = STATE_WORKING;
 						frames ++;
 						main.getFPSLabel().setText("fps: "+(frames / ((double)(System.currentTimeMillis() - startmillis) / 1000)));
 
@@ -53,5 +56,30 @@ public class RunThread extends Thread {
 	}
 	public void resumeSim() {
 		state = STATE_RUNNING;
+	}
+
+
+	class WorkThread extends Thread {
+		public WorkThread() {
+			start();
+		}
+		@Override
+		public void run() {
+			try {
+				while(true) {
+
+					//TODO
+
+					synchronized(runthread) {
+						state = STATE_RUNNING;
+						synchronized (this) {
+							wait();
+						}
+					}
+				}
+			} catch(InterruptedException e) {
+				e.printStackTrace();
+			}
+		}
 	}
 }
