@@ -1,5 +1,8 @@
 package actors;
 
+import java.awt.Color;
+import java.awt.Graphics2D;
+import java.awt.image.BufferedImage;
 import java.util.Random;
 
 import main.Main;
@@ -19,6 +22,7 @@ public class Electron extends SmoothActor implements ChargedParticle {
 	public static final int INFLUENCING_DISTANCE = 20;
 	static final double charge = -1;
 	static final double[][] emMap;
+	static final BufferedImage shadow;
 
 	static {
 		int mapsize = (int)(DISTANCE_INFLUENCED*2);
@@ -34,6 +38,11 @@ public class Electron extends SmoothActor implements ChargedParticle {
 					emMap[x][y] = DataHandler.calcEMForce(charge, diff, DISTANCE_INFLUENCED);
 			}
 		}
+
+		shadow = new BufferedImage(2, 2, BufferedImage.TYPE_INT_ARGB);
+		Graphics2D g = (Graphics2D)shadow.getGraphics();
+		g.setColor(new Color(0f, 0f, 0f, 0.5f));
+		g.fillRect(0, 0, 2, 2);
 	}
 
 	public Electron() {
@@ -52,6 +61,10 @@ public class Electron extends SmoothActor implements ChargedParticle {
 	@Override
 	public double[][] getEMMap() {
 		return emMap;
+	}
+	@Override
+	public BufferedImage getShadow() {
+		return shadow;
 	}
 
 	@Override

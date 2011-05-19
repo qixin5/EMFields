@@ -5,11 +5,12 @@ import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.image.BufferStrategy;
 
+import other.ChargedParticle;
 import other.DataHandler;
 
 public class MyCanvas extends Canvas {
 	private static final long serialVersionUID = 1L;
-	public static final int PAINT_SCALE = 4;
+	public static final int PAINT_SCALE = 1;
 	public static final Color[] colorLookUpTable;
 
 	static {
@@ -44,6 +45,7 @@ public class MyCanvas extends Canvas {
 		g.setBackground(Color.BLACK);
 		g.clearRect(0, 0, getWidth(), getHeight());
 
+		// em map
 		double[][] charges = handler.getEMMap();
 		double charge;
 		for(int x = 0; x < charges.length; x++) {
@@ -58,6 +60,15 @@ public class MyCanvas extends Canvas {
 			}
 		}
 
+		// shadows
+		for(ChargedParticle p : handler.getParticles()) {
+			g.drawImage(p.getShadow(),
+					p.getX() - p.getShadow().getWidth()/2,
+					p.getY() - p.getShadow().getHeight()/2,
+					null);
+		}
+
+		// border
 		drawBorder(g);
 
 		// flip buffers
