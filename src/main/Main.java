@@ -1,6 +1,7 @@
 package main;
 
 import java.awt.BorderLayout;
+import java.awt.Checkbox;
 import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
@@ -10,6 +11,7 @@ import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JSlider;
 
 import other.DataHandler;
 import actors.Conductor;
@@ -19,13 +21,18 @@ public class Main extends JFrame {
 	private static final long serialVersionUID = 1L;
 	public static final int FIELD_WIDTH = 200;
 	public static final int FIELD_HEIGHT = 200;
+
 	private RunThread runthread;
+
 	private BenchmarkCanvas benchmarkCanvas;
 	private MapCanvas canvas;
-	private JButton pausebutton;
-	private JLabel fpslabel;
 
-	DataHandler handler = new DataHandler();
+	private JButton pausebutton;
+	private JSlider speedslider;
+	private JLabel fpslabel;
+	private Checkbox autoScale, drawShadows, drawTracks;
+
+	DataHandler handler = new DataHandler(this);
 
 	public Main() {
 		super("EM Fields");
@@ -37,19 +44,37 @@ public class Main extends JFrame {
 		add(scaleplot, BorderLayout.NORTH);
 
 		JPanel plot = new JPanel();
-			canvas = new MapCanvas(handler);
+			canvas = new MapCanvas(this, handler);
 			plot.add(canvas);
 		add(plot, BorderLayout.WEST);
 
 		JPanel leftpanel = new JPanel(new BorderLayout(2, 2));
 			leftpanel.setPreferredSize(new Dimension(200, -1));
-			JPanel leftnorthpanel = new JPanel(new GridLayout(2, 1, 2, 2));
+			JPanel leftnorthpanel = new JPanel(new GridLayout(6, 1, 2, 4));
 				pausebutton = new JButton("pause");
 					pausebutton.addActionListener(new MyActionListener());
 				leftnorthpanel.add(pausebutton);
+
+				speedslider = new JSlider(0, 200, 20);
+					speedslider.setPaintLabels(true);
+					speedslider.setLabelTable(speedslider.createStandardLabels(50));
+
+					speedslider.setPaintTicks(true);
+					speedslider.setMinorTickSpacing(10);
+					speedslider.setMajorTickSpacing(50);
+				leftnorthpanel.add(speedslider);
 	
 				fpslabel = new JLabel("fps: ?");
 				leftnorthpanel.add(fpslabel);
+
+				autoScale = new Checkbox("auto scale", true);
+				leftnorthpanel.add(autoScale);
+
+				drawShadows = new Checkbox("draw shadows", true);
+				leftnorthpanel.add(drawShadows);
+
+				drawTracks = new Checkbox("draw tracks", false);
+				leftnorthpanel.add(drawTracks);
 			leftpanel.add(leftnorthpanel, BorderLayout.NORTH);
 		add(leftpanel, BorderLayout.CENTER);
 
@@ -58,8 +83,8 @@ public class Main extends JFrame {
 		setResizable(false);
 		setVisible(true);
 
-		handler.addChargedParticle(new Conductor(100, 100, 1, 50, 1));
-		for(int i = 0; i < 2; i++)
+		handler.addChargedParticle(new Conductor(100, 100, 1, 1, 1));
+		for (int i = 0; i < 1; i ++)
 			handler.addChargedParticle(new Electron(100, 120));
 
 		benchmarkCanvas.init();
@@ -77,6 +102,19 @@ public class Main extends JFrame {
 	}
 	public BenchmarkCanvas getMyScaleCanvas() {
 		return benchmarkCanvas;
+	}
+
+	public long getMillisToWait() {
+		return speedslider.getValue();
+	}
+	public boolean autoScale() {
+		return autoScale.getState();
+	}
+	public boolean drawShadows() {
+		return drawShadows.getState();
+	}
+	public boolean drawTracks() {
+		return drawTracks.getState();
 	}
 
 	private class MyActionListener implements ActionListener {

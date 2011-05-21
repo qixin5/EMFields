@@ -45,7 +45,7 @@ public class Electron extends SmoothActor implements ChargedParticle {
 	 * Ringbuffer for track.
 	 * Uninitialised positions are <code>null</code>.
 	 */
-	int[][] track = new int[50][];
+	int[][] track = new int[150][];
 	/**
 	 * The position in the ringbuffer for track.
 	 */

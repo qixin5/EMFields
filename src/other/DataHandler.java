@@ -8,10 +8,15 @@ public class DataHandler {
 	public static final int BORDER = 20;
 	public static final double FRICTION = 1.01;
 
+	final Main main;
 	ArrayList<ChargedParticle> particles = new ArrayList<ChargedParticle>();
 	double[][] map = new double[Main.FIELD_WIDTH][Main.FIELD_HEIGHT];
-	double maxcharge = 1;
-	double mincharge = -1;
+	double maxcharge = 4;
+	double mincharge = -4;
+
+	public DataHandler(Main main) {
+		this.main = main;
+	}
 
 	public double[][] getEMMap() {
 		return map;
@@ -54,7 +59,9 @@ public class DataHandler {
 			double[][] pmap = p.getEMMap();
 			drawEMMapTile(pmap, p.getX(), p.getY());
 		}
-		recalcMaxMinCharge();
+
+		if(main.autoScale())
+			recalcMaxMinCharge();
 	}
 	protected void resetMap() {
 		for (int x = 0; x < map.length; x ++) {

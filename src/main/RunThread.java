@@ -1,7 +1,7 @@
 package main;
 
 public class RunThread extends Thread {
-	final public long STEP_WAIT_MS = 40;
+	final public long STEP_WAIT_MS = 10;
 
 	final public int STATE_RUNNING = 0;
 	final public int STATE_WORKING = 1;
@@ -10,9 +10,10 @@ public class RunThread extends Thread {
 	private int state = STATE_RUNNING;
 
 	private final Main main;
-	private final RunThread runthread = this;
-	private long startmillis;
-	private double frames = 0;
+
+	private long[] millis = new long[10];
+	private long lastmillis;
+	private int millispos=0;
 
 	public RunThread(Main main) {
 		this.main = main;
@@ -20,32 +21,38 @@ public class RunThread extends Thread {
 	}
 	public void run() {
 		try {
-			startmillis = System.currentTimeMillis();
+			lastmillis = System.currentTimeMillis();
 			while(true) {
-				try {
-					if(state == STATE_RUNNING) {
-//						state = STATE_WORKING;
-						frames ++;
-						main.getFPSLabel().setText("fps: "+(frames / ((double)(System.currentTimeMillis() - startmillis) / 1000)));
+				if(state == STATE_RUNNING) {
+					// calculate fps
+					millis[millispos] = System.currentTimeMillis()-lastmillis;
+					lastmillis = System.currentTimeMillis();
+					recalcFpS();
+					millispos ++;
+					if(millispos == millis.length)
+						millispos = 0;
 
-						main.getDataHandler().act();
-						main.getMyScaleCanvas().draw();
-						main.getMyCanvas().draw();
-					} else {
-						startmillis = System.currentTimeMillis();
-						frames = 0;
-	
-						if(state == STATE_STOP)
-							break;
-					}
-				} catch (Exception e) {
-					e.printStackTrace();
+					// work
+					main.getDataHandler().act();
+					main.getMyScaleCanvas().draw();
+					main.getMyCanvas().draw();
+				} else {
+					if(state == STATE_STOP)
+						break;
 				}
-				Thread.sleep(STEP_WAIT_MS);
+				Thread.sleep(main.getMillisToWait());
 			}
-		} catch (InterruptedException e) {
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
+	}
+	public void recalcFpS() {
+		long sum = 0;
+		for(int i = 0; i < millis.length; i++) {
+			sum += millis[i];
+		}
+		sum /= millis.length;
+		main.getFPSLabel().setText("ms per frame: "+sum);
 	}
 
 	public int getRunState() {
@@ -56,30 +63,5 @@ public class RunThread extends Thread {
 	}
 	public void resumeSim() {
 		state = STATE_RUNNING;
-	}
-
-
-	class WorkThread extends Thread {
-		public WorkThread() {
-			start();
-		}
-		@Override
-		public void run() {
-			try {
-				while(true) {
-
-					//TODO
-
-					synchronized(runthread) {
-						state = STATE_RUNNING;
-						synchronized (this) {
-							wait();
-						}
-					}
-				}
-			} catch(InterruptedException e) {
-				e.printStackTrace();
-			}
-		}
 	}
 }
