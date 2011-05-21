@@ -10,8 +10,13 @@ import other.DataHandler;
 
 public class MyCanvas extends Canvas {
 	private static final long serialVersionUID = 1L;
-	public static final int PAINT_SCALE = 1;
+	/**
+	 * The length in pixels of one cell of the map.
+	 */
+	public static final int PAINT_SCALE = 3;
+
 	public static final Color[] colorLookUpTable;
+	public static final Color shadowColor = new Color(0f, 0f, 0f, 0.5f);
 
 	static {
 		// there are 511 colors
@@ -61,11 +66,18 @@ public class MyCanvas extends Canvas {
 		}
 
 		// shadows
+		g.setColor(shadowColor);
+		int[][] shadow;
+		int xshift, yshift;
 		for(ChargedParticle p : handler.getParticles()) {
-			g.drawImage(p.getShadow(),
-					p.getX() - p.getShadow().getWidth()/2,
-					p.getY() - p.getShadow().getHeight()/2,
-					null);
+			shadow = p.getShadowMap();
+			xshift = p.getX() - shadow.length/2;
+			yshift = p.getY() - shadow.length/2;
+			for(int x = 0; x < shadow.length; x++) {
+				for(int y = 0; y < shadow[x].length; y++) {
+					g.fillRect((x+xshift)*PAINT_SCALE, (y+yshift)*PAINT_SCALE, PAINT_SCALE, PAINT_SCALE);
+				}
+			}
 		}
 
 		// border
@@ -93,7 +105,7 @@ public class MyCanvas extends Canvas {
 		val += 255;
 
 		if(val < 0 || val >= colorLookUpTable.length)
-			return Color.BLACK;
+			return Color.WHITE;
 		else
 			return colorLookUpTable[val];
 	}

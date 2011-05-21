@@ -58,11 +58,11 @@ public class Main extends JFrame {
 		setResizable(false);
 		setVisible(true);
 
-		handler.addChargedParticle(new Conductor(100, 100, 50, 1, 1));
+		handler.addChargedParticle(new Conductor(100, 100, 1, 1, 05));
 //		handler.addChargedParticle(new Conductor(100, 100, 1, 50, 1));
-		handler.addChargedParticle(new Conductor(140, 70, 1, 50, 1));
-		for(int i = 0; i < 9; i++)
-			handler.addChargedParticle(new Electron(100, 100));
+//		handler.addChargedParticle(new Conductor(140, 70, 1, 50, 1));
+		for(int i = 0; i < 1; i++)
+			handler.addChargedParticle(new Electron(100, 120));
 
 		scalecanvas.init();
 		canvas.init();

@@ -1,17 +1,13 @@
 package actors;
 
-import java.awt.Color;
-import java.awt.Graphics2D;
-import java.awt.image.BufferedImage;
-
 import other.ChargedParticle;
 import other.DataHandler;
 import other.Vector;
 
 public class Conductor implements ChargedParticle {
-	static final int DISTANCE_INFLUENCED = 40;
+	static final int DISTANCE_INFLUENCED = 100;
 	final double[][] emMap;
-	final BufferedImage shadow;
+	final int[][] shadowMap;
 	final double charge;
 	int xpos, ypos;
 
@@ -52,10 +48,10 @@ public class Conductor implements ChargedParticle {
 			}
 		}
 
-		shadow = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
-		Graphics2D g = (Graphics2D)shadow.getGraphics();
-		g.setColor(new Color(0f, 0f, 0f, 0.5f));
-		g.fillRect(0, 0, width, height);
+		shadowMap = new int[width][height];
+		for(int x = 0; x < width; x++)
+			for(int y = 0; y < height; y++)
+				shadowMap[x][y] = 255;
 	}
 
 	@Override
@@ -67,8 +63,8 @@ public class Conductor implements ChargedParticle {
 		return emMap;
 	}
 	@Override
-	public BufferedImage getShadow() {
-		return shadow;
+	public int[][] getShadowMap() {
+		return shadowMap;
 	}
 
 	@Override

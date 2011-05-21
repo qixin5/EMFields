@@ -6,7 +6,7 @@ import main.Main;
 
 public class DataHandler {
 	public static final int BORDER = 20;
-	public static final double FRICTION = 1.05;
+	public static final double FRICTION = 1.01;
 
 	ArrayList<ChargedParticle> particles = new ArrayList<ChargedParticle>();
 	double[][] map = new double[Main.FIELD_WIDTH][Main.FIELD_HEIGHT];
