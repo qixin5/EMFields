@@ -102,6 +102,10 @@ public class DataHandler {
 					mincharge = val;
 			}
 		}
+
+//		int round = mincharge*1000D;
+		main.getMinChargeLabel().setText(""+mincharge);
+		main.getMaxChargeLabel().setText(""+maxcharge);
 	}
 
 	public ArrayList<ChargedParticle> getParticles() {

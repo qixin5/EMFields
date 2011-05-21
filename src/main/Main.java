@@ -29,7 +29,7 @@ public class Main extends JFrame {
 
 	private JButton pausebutton;
 	private JSlider speedslider;
-	private JLabel fpslabel;
+	private JLabel fpslabel, minchargelabel, maxchargelabel;
 	private Checkbox autoScale, drawShadows, drawTracks;
 
 	DataHandler handler = new DataHandler(this);
@@ -38,9 +38,17 @@ public class Main extends JFrame {
 		super("EM Fields");
 		setLayout(new BorderLayout(2, 2));
 
-		JPanel scaleplot = new JPanel();
+		JPanel scaleplot = new JPanel(new BorderLayout(2, 2));
+			minchargelabel = new JLabel(""+handler.getMinCharge());
+				minchargelabel.setPreferredSize(new Dimension(70, -1));
+			scaleplot.add(minchargelabel, BorderLayout.WEST);
+
 			benchmarkCanvas = new BenchmarkCanvas(handler);
 			scaleplot.add(benchmarkCanvas);
+
+			maxchargelabel = new JLabel(""+handler.getMaxCharge());
+				maxchargelabel.setPreferredSize(new Dimension(70, -1));
+			scaleplot.add(maxchargelabel, BorderLayout.EAST);
 		add(scaleplot, BorderLayout.NORTH);
 
 		JPanel plot = new JPanel();
@@ -51,11 +59,11 @@ public class Main extends JFrame {
 		JPanel leftpanel = new JPanel(new BorderLayout(2, 2));
 			leftpanel.setPreferredSize(new Dimension(200, -1));
 			JPanel leftnorthpanel = new JPanel(new GridLayout(6, 1, 2, 4));
-				pausebutton = new JButton("pause");
+				pausebutton = new JButton("start");
 					pausebutton.addActionListener(new MyActionListener());
 				leftnorthpanel.add(pausebutton);
 
-				speedslider = new JSlider(0, 200, 20);
+				speedslider = new JSlider(0, 200, 5);
 					speedslider.setPaintLabels(true);
 					speedslider.setLabelTable(speedslider.createStandardLabels(50));
 
@@ -90,6 +98,7 @@ public class Main extends JFrame {
 		benchmarkCanvas.init();
 		canvas.init();
 		runthread = new RunThread(this);
+		runthread.pauseSim();
 	}
 	public JLabel getFPSLabel() {
 		return fpslabel;
@@ -102,6 +111,12 @@ public class Main extends JFrame {
 	}
 	public BenchmarkCanvas getMyScaleCanvas() {
 		return benchmarkCanvas;
+	}
+	public JLabel getMinChargeLabel() {
+		return minchargelabel;
+	}
+	public JLabel getMaxChargeLabel() {
+		return maxchargelabel;
 	}
 
 	public long getMillisToWait() {
@@ -123,7 +138,7 @@ public class Main extends JFrame {
 			if(event.getActionCommand().equals("pause")) {
 				runthread.pauseSim();
 				pausebutton.setText("resume");
-			} else if(event.getActionCommand().equals("resume")) {
+			} else if(event.getActionCommand().equals("resume") || event.getActionCommand().equals("start")) {
 				runthread.resumeSim();
 				pausebutton.setText("pause");
 			}
