@@ -5,7 +5,7 @@ import other.DataHandler;
 import other.Vector;
 
 public class Conductor implements ChargedParticle {
-	static final int DISTANCE_INFLUENCED = 100;
+	static final int DISTANCE_INFLUENCED = 40;
 	final double[][] emMap;
 	final int[][] shadowMap;
 	final double charge;
@@ -65,6 +65,14 @@ public class Conductor implements ChargedParticle {
 	@Override
 	public int[][] getShadowMap() {
 		return shadowMap;
+	}
+	@Override
+	public int[][] getTrack() {
+		return null;
+	}
+	@Override
+	public int getTrackPos() {
+		return -1;
 	}
 
 	@Override

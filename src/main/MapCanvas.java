@@ -8,7 +8,7 @@ import java.awt.image.BufferStrategy;
 import other.ChargedParticle;
 import other.DataHandler;
 
-public class MyCanvas extends Canvas {
+public class MapCanvas extends Canvas {
 	private static final long serialVersionUID = 1L;
 	/**
 	 * The length in pixels of one cell of the map.
@@ -17,6 +17,7 @@ public class MyCanvas extends Canvas {
 
 	public static final Color[] colorLookUpTable;
 	public static final Color shadowColor = new Color(0f, 0f, 0f, 0.5f);
+	public static final Color trackColor = new Color(0f, 0f, 0f, 0.3f);
 
 	static {
 		// there are 511 colors
@@ -32,10 +33,13 @@ public class MyCanvas extends Canvas {
 		}
 	}
 
+	// end of static fields an constructor
+	/////////////////////////////////////////////
+
 	private BufferStrategy strategy;
 	private final DataHandler handler;
 
-	public MyCanvas(DataHandler handler) {
+	public MapCanvas(DataHandler handler) {
 		this.handler = handler;
 		setBounds(0, 0, Main.FIELD_WIDTH*PAINT_SCALE, Main.FIELD_HEIGHT*PAINT_SCALE);
 		setIgnoreRepaint(true);
@@ -65,19 +69,46 @@ public class MyCanvas extends Canvas {
 			}
 		}
 
-		// shadows
-		g.setColor(shadowColor);
-		int[][] shadow;
-		int xshift, yshift;
+		// shadows and tracks
+		// defining vars (to avoid unnecessary new-allocation)
+		int[][] shadow, track;
+		int[] location, lastLocation;
+		int xshift, yshift, trackpos;
 		for(ChargedParticle p : handler.getParticles()) {
+			// shadow
+			g.setColor(shadowColor);
 			shadow = p.getShadowMap();
 			xshift = p.getX() - shadow.length/2;
-			yshift = p.getY() - shadow.length/2;
+			yshift = p.getY() - shadow[0].length/2;
 			for(int x = 0; x < shadow.length; x++) {
 				for(int y = 0; y < shadow[x].length; y++) {
 					g.fillRect((x+xshift)*PAINT_SCALE, (y+yshift)*PAINT_SCALE, PAINT_SCALE, PAINT_SCALE);
 				}
 			}
+
+			// track
+			g.setColor(trackColor);
+			track = p.getTrack();
+			if(track == null)
+				continue;
+			trackpos = p.getTrackPos();
+			if(trackpos < 0)
+				continue;
+			lastLocation = track[trackpos];
+			do {
+				location = track[trackpos];
+				if(location != null && lastLocation != null) {
+					g.drawLine(location[0]*PAINT_SCALE,
+							location[1]*PAINT_SCALE,
+							lastLocation[0]*PAINT_SCALE,
+							lastLocation[1]*PAINT_SCALE);
+				}
+				lastLocation = location;
+
+				trackpos ++;
+				if(trackpos == track.length)
+					trackpos = 0;
+			} while(trackpos != p.getTrackPos());
 		}
 
 		// border

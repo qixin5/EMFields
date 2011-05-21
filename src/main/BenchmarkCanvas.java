@@ -7,7 +7,7 @@ import java.awt.image.BufferStrategy;
 
 import other.DataHandler;
 
-public class MyScaleCanvas extends Canvas {
+public class BenchmarkCanvas extends Canvas {
 	private static final long serialVersionUID = 1L;
 	private static final int CANVAS_HEIGHT = 30;
 	private static final int CENTERINDICATOR_HEIGHT = 10;
@@ -16,9 +16,9 @@ public class MyScaleCanvas extends Canvas {
 	private BufferStrategy strategy;
 	private final DataHandler handler;
 
-	public MyScaleCanvas(DataHandler handler) {
+	public BenchmarkCanvas(DataHandler handler) {
 		this.handler = handler;
-		setBounds(0, 0, Main.FIELD_WIDTH*MyCanvas.PAINT_SCALE, CANVAS_HEIGHT);
+		setBounds(0, 0, Main.FIELD_WIDTH*MapCanvas.PAINT_SCALE, CANVAS_HEIGHT);
 		setIgnoreRepaint(true);
 	}
 	public void init() {
@@ -38,7 +38,7 @@ public class MyScaleCanvas extends Canvas {
 
 		double charge = mincharge;
 		for(int i = 0; i < getWidth(); i++) {
-			g.setColor(MyCanvas.getColorPosForCharge(charge, mincharge, maxcharge));
+			g.setColor(MapCanvas.getColorPosForCharge(charge, mincharge, maxcharge));
 			g.drawLine(i, 0, i, getHeight()-CENTERINDICATOR_HEIGHT-1);
 
 			charge += diffperpixel;

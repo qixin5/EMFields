@@ -21,6 +21,15 @@ public interface ChargedParticle {
     public int[][] getShadowMap();
 
     /**
+     * @return the ringbuffer with the track of this particle. <code>null</code> when no track is recorded.
+     */
+    public int[][] getTrack();
+    /**
+     * @return the position in the ringbuffer for the track. <code>-1</code> when no track is recorded.
+     */
+    public int getTrackPos();
+
+    /**
      * @return the approximated x-component of the position of this particle.
      */
     public int getX();

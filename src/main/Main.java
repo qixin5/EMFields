@@ -20,8 +20,8 @@ public class Main extends JFrame {
 	public static final int FIELD_WIDTH = 200;
 	public static final int FIELD_HEIGHT = 200;
 	private RunThread runthread;
-	private MyScaleCanvas scalecanvas;
-	private MyCanvas canvas;
+	private BenchmarkCanvas benchmarkCanvas;
+	private MapCanvas canvas;
 	private JButton pausebutton;
 	private JLabel fpslabel;
 
@@ -32,12 +32,12 @@ public class Main extends JFrame {
 		setLayout(new BorderLayout(2, 2));
 
 		JPanel scaleplot = new JPanel();
-			scalecanvas = new MyScaleCanvas(handler);
-			scaleplot.add(scalecanvas);
+			benchmarkCanvas = new BenchmarkCanvas(handler);
+			scaleplot.add(benchmarkCanvas);
 		add(scaleplot, BorderLayout.NORTH);
 
 		JPanel plot = new JPanel();
-			canvas = new MyCanvas(handler);
+			canvas = new MapCanvas(handler);
 			plot.add(canvas);
 		add(plot, BorderLayout.WEST);
 
@@ -58,13 +58,11 @@ public class Main extends JFrame {
 		setResizable(false);
 		setVisible(true);
 
-		handler.addChargedParticle(new Conductor(100, 100, 1, 1, 05));
-//		handler.addChargedParticle(new Conductor(100, 100, 1, 50, 1));
-//		handler.addChargedParticle(new Conductor(140, 70, 1, 50, 1));
-		for(int i = 0; i < 1; i++)
+		handler.addChargedParticle(new Conductor(100, 100, 1, 50, 1));
+		for(int i = 0; i < 2; i++)
 			handler.addChargedParticle(new Electron(100, 120));
 
-		scalecanvas.init();
+		benchmarkCanvas.init();
 		canvas.init();
 		runthread = new RunThread(this);
 	}
@@ -74,11 +72,11 @@ public class Main extends JFrame {
 	public DataHandler getDataHandler() {
 		return handler;
 	}
-	public MyCanvas getMyCanvas() {
+	public MapCanvas getMyCanvas() {
 		return canvas;
 	}
-	public MyScaleCanvas getMyScaleCanvas() {
-		return scalecanvas;
+	public BenchmarkCanvas getMyScaleCanvas() {
+		return benchmarkCanvas;
 	}
 
 	private class MyActionListener implements ActionListener {

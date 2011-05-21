@@ -17,6 +17,7 @@ public class Electron extends SmoothActor implements ChargedParticle {
 	 * The range of the effect of the em fields of the map to this electron.
 	 */
 	public static final int INFLUENCING_DISTANCE = 20;
+
 	static final double charge = -1;
 	static final double[][] emMap;
 	static final int[][] shadowMap;
@@ -40,6 +41,16 @@ public class Electron extends SmoothActor implements ChargedParticle {
 		shadowMap[0][0] = 255;
 	}
 
+	/**
+	 * Ringbuffer for track.
+	 * Uninitialised positions are <code>null</code>.
+	 */
+	int[][] track = new int[50][];
+	/**
+	 * The position in the ringbuffer for track.
+	 */
+	int trackpos = 0;
+
 	public Electron() {
 		location = new Vector(
 				randgen.nextDouble()*Main.FIELD_WIDTH,
@@ -61,6 +72,14 @@ public class Electron extends SmoothActor implements ChargedParticle {
 	public int[][] getShadowMap() {
 		return shadowMap;
 	}
+	@Override
+	public int[][] getTrack() {
+		return track;
+	}
+	@Override
+	public int getTrackPos() {
+		return trackpos;
+	}
 
 	@Override
 	public int getX() {
@@ -72,13 +91,18 @@ public class Electron extends SmoothActor implements ChargedParticle {
 	}
 
 	public void act(double[][] map) {
-		acceleration.setLength(0);
+		// update track
+		track[trackpos] = new int[]{getX(), getY()};
+		trackpos ++;
+		if(trackpos == track.length)
+			trackpos = 0;
 
+		// update acceleration
+		acceleration.setLength(0);
 		int xpos = getX();
 		int ypos = getY();
 		double xdiff, ydiff, diff;
 		Vector v = new Vector();
-
 		for (int x = xpos-INFLUENCING_DISTANCE; x <= xpos+INFLUENCING_DISTANCE; x++) {
 			if (x < 0 || x >= map.length)
 				continue;
@@ -100,7 +124,7 @@ public class Electron extends SmoothActor implements ChargedParticle {
 			}
 		}
 
-//		acceleration.setLength(acceleration.getLength());
+		// apply effect of acceleration on velocity and of velocity on location.
 		applyMovement();
 	}
 }

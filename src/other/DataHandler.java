@@ -64,22 +64,22 @@ public class DataHandler {
 		}
 	}
 	public void drawEMMapTile(double[][] pmap, int xpos, int ypos) {
-		int pmapx = 0;
+		int pmapx = -1; // the position in the particle map
 		int pmapxhalf = pmap.length/2;
 		for (int x = xpos-pmapxhalf; x < xpos+pmapxhalf; x++) {
+			pmapx ++;
 			if (x < 0 || x >= map.length)
 				continue;
 
-			int pmapy = 0;
+			int pmapy = -1;
 			int pmapyhalf = pmap[pmapx].length/2;
 			for (int y = ypos-pmapyhalf; y < ypos+pmapyhalf; y++) {
+				pmapy ++;
 				if (y < 0 || y >= map[x].length)
 					continue;
 
 				map[x][y] += pmap[pmapx][pmapy];
-				pmapy ++;
 			}
-			pmapx ++;
 		}
 	}
 	public void recalcMaxMinCharge() {
