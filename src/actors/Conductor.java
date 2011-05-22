@@ -95,6 +95,6 @@ public class Conductor implements ChargedParticle {
 
 	@Override
 	public void act(double[][] map) {
-		//TODO ???
+		return;
 	}
 }
